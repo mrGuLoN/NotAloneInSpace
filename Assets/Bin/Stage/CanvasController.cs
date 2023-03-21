@@ -13,30 +13,35 @@ public class CanvasController : MonoBehaviour
     public static CanvasController singletonCanvas { get; private set; }
 
     private int _scoreInt, _updateRadarInt, _updateSpeedInt, _updateDamageInt, _numberStage, _stageDec;
+    private int _lvlRadar;
 
     private void Awake()
     {
         singletonCanvas = this;
-       
+        DontDestroyOnLoad(this);
     }
     // Start is called before the first frame update
     void Start()
     {
-        PlayerController.singletonPlayer.gameObject.SetActive(false);
-        EnemyController.enemySingleTone.gameObject.SetActive(false);
+        ControllerPlayer.singletonePlayer.gameObject.SetActive(false);
+        ControllerEnemy.controllerEnemySingletone.gameObject.SetActive(false);
         startPannel.SetActive(true);
     }
 
     public void UpdateRadar()
-    {
-        Debug.Log("damageUp");
-        if (_updateRadarInt <= _scoreInt)
+    {        
+        if (_updateRadarInt <= _scoreInt && _lvlRadar < 2)
         {
             _scoreInt -= _updateRadarInt;
-            score.text = _scoreInt.ToString();           
-            PlayerController.singletonPlayer.UpRadiusFire(shopSO.upRadar);
+            score.text = _scoreInt.ToString();
+            ControllerPlayer.singletonePlayer.UpdateRadar(shopSO.upRadar);
             _updateRadarInt += _updateRadarInt * (int)shopSO.percentUpPriceRadar / 100;
             costUpdateRadar.text = _updateRadarInt.ToString();
+            _lvlRadar++;
+        }
+        else
+        {
+            costUpdateRadar.text = "MAX";
         }
     }
 
@@ -45,8 +50,8 @@ public class CanvasController : MonoBehaviour
         if (_updateSpeedInt <= _scoreInt)
         {
             _scoreInt -= _updateSpeedInt;
-            score.text = _scoreInt.ToString();            
-            PlayerController.singletonPlayer.UpdateSpeed(shopSO.upSpeed);
+            score.text = _scoreInt.ToString();
+            ControllerPlayer.singletonePlayer.UpdateSpeedFire(shopSO.upSpeed);
             _updateSpeedInt += _updateSpeedInt * (int)shopSO.percentUpPriceSpeed / 100;
             costUpdateSpeed.text = _updateSpeedInt.ToString();
         }
@@ -58,15 +63,14 @@ public class CanvasController : MonoBehaviour
         {
             _scoreInt -= _updateDamageInt;
             score.text = _scoreInt.ToString();
-            PlayerController.singletonPlayer.UpdateDamage(shopSO.upDamage);
+            ControllerPlayer.singletonePlayer.UpdateDamage(shopSO.upDamage);
             _updateDamageInt += _updateDamageInt * (int)shopSO.percentUpPriceDamage / 100;
             costUpdateDamage.text = _updateDamageInt.ToString();
         }
     }
 
     public void UpdateScore(int update)
-    {
-        Debug.Log(_scoreInt + " / " + update);
+    {      
         _scoreInt += update;
         score.text = _scoreInt.ToString();
     }
@@ -74,13 +78,13 @@ public class CanvasController : MonoBehaviour
     public void UpdateHealth(int maxHealth, int CurrentHealth)
     {
         energy.size =  (float)CurrentHealth / (float)maxHealth;
-        if (energy.size <= 0.01f) energy.size = 0.1f;
+        if (energy.size <= 0.01f) energy.size = 0.05f;
     }
 
     public void UpdateStage(int updateEnemy, int maxEnemy)
     {
         stageProgressScroll.size = (float)updateEnemy / (float)maxEnemy;
-        if (stageProgressScroll.size <= 0.01f) stageProgressScroll.size = 0.1f;
+        if (stageProgressScroll.size <= 0.01f) stageProgressScroll.size = 0.05f;
         
     }
 
@@ -92,14 +96,14 @@ public class CanvasController : MonoBehaviour
         if (_stageDec >= 10)
         {
             _stageDec = 0;
-            EnemyController.enemySingleTone.UpDecStage();
+            ControllerEnemy.controllerEnemySingletone.UpdateMobeStage();
         }
     }
 
     public void Dead()
     {
-        EnemyController.enemySingleTone.enabled = false;
-        PlayerController.singletonPlayer.enabled = false;
+        ControllerEnemy.controllerEnemySingletone.enabled = false;
+        ControllerPlayer.singletonePlayer.enabled = false;
         startPannel.SetActive(true);
     }
 
@@ -107,19 +111,25 @@ public class CanvasController : MonoBehaviour
     {
         _stageDec = 0;
         _scoreInt = 0;
+        _lvlRadar = 0;
+
         _updateRadarInt = shopSO.startPriceRadar;
         _updateSpeedInt = shopSO.startPriceSpeed;
         _updateDamageInt = shopSO.startPriceDamage;
+
         score.text = _scoreInt.ToString();
         costUpdateRadar.text = _updateRadarInt.ToString();
         costUpdateDamage.text = _updateDamageInt.ToString();
         costUpdateSpeed.text = _updateSpeedInt.ToString();
-        PlayerController.singletonPlayer.gameObject.SetActive(true);
-        PlayerController.singletonPlayer.enabled = true;
-        PlayerController.singletonPlayer.Starting();
-        EnemyController.enemySingleTone.gameObject.SetActive(true);
-        EnemyController.enemySingleTone.enabled = true;
-        EnemyController.enemySingleTone.StartStarting();
+
+        ControllerPlayer.singletonePlayer.gameObject.SetActive(true);
+        ControllerPlayer.singletonePlayer.enabled = true;
+        ControllerPlayer.singletonePlayer.SetupPlayerSOParametrs();
+
+        ControllerEnemy.controllerEnemySingletone.gameObject.SetActive(true);
+        ControllerEnemy.controllerEnemySingletone.enabled = true;
+        ControllerEnemy.controllerEnemySingletone.SetupEnemySOParametrs();
+
         startPannel.SetActive(false);
         _stageDec = 0;
         _numberStage = 0;

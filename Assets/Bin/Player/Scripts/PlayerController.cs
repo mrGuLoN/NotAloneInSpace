@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         singletonPlayer = this;
-        PlayerRadar._enemiInRadar += AddEnemyListTR;
+       // PlayerRadar._enemiInRadar += AddEnemyListTR;
         EnemyMob._enemyContChange += RemoveListEnemyTransform;
         _poolBullet = this.gameObject.AddComponent<PoolObject>();
         _poolBullet.Starting(playerSO.bulletGO, 10);

@@ -17,8 +17,7 @@ public class PoolObject : MonoBehaviour
             _poolGO = poolObject;
             _thisTR = GetComponent<Transform>();
             GameObject obj = Instantiate(_poolGO, _thisTR.position, _thisTR.rotation, _thisTR);
-            poolObjectList.Add(obj);
-            obj.AddComponent<EnemyMob>();           
+            poolObjectList.Add(obj);                  
         }
         for (int i=0; i < poolObjectList.Count; i++)
         {
@@ -41,8 +40,8 @@ public class PoolObject : MonoBehaviour
         }
         GameObject obj = Instantiate(_poolGO, position, _thisTR.rotation, _thisTR);
         transformGO = obj.transform;
-        obj.AddComponent<EnemyMob>();
-        transformGO.up = direction;       
+        transformGO.position = position;       
+        transformGO.up = direction;      
         
         poolObjectList.Add(obj);
         obj.SetActive(true);
