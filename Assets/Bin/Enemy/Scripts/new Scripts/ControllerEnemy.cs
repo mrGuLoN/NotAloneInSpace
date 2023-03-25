@@ -23,13 +23,14 @@ public class ControllerEnemy : MonoBehaviour
         controllerEnemySingletone = this;
         DontDestroyOnLoad(this);
         EnemyMob._enemyContChange += ChangeEnemyList;
+        _enemyMoveController = gameObject.AddComponent<EnemyMoveController>();
+        _enemyRespawnController = gameObject.AddComponent<EnemyRespawnController>();
+
     }
 
     void Start()
     {          
-        _enemyMoveController = gameObject.AddComponent<EnemyMoveController>();
-        _enemyRespawnController = gameObject.AddComponent<EnemyRespawnController>();
-
+       
         currentNumberEnemy = enemySO.startCont;
 
         SetupEnemySOParametrs();

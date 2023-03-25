@@ -23,15 +23,16 @@ public class ControllerPlayer : MonoBehaviour
     {
         singletonePlayer = this;
         DontDestroyOnLoad(this);
-    }
-    void Start()
-    {
         _playerAnimation = gameObject.AddComponent<PlayerAnimationController>();
         _playerFire = gameObject.AddComponent<PlayerFireController>();
         _playerPool = gameObject.AddComponent<PlayerPoolController>();
 
         radarTransform.gameObject.AddComponent<PlayerRadar>();
         radarTransform.gameObject.AddComponent<Rigidbody2D>().gravityScale = 0;
+    }
+    void Start()
+    {
+      
 
         SetupPlayerSOParametrs();
     }
